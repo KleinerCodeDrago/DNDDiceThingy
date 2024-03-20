@@ -79,6 +79,37 @@ jobs:
         asset_name: app-armeabi-v7a-release.apk
         asset_content_type: application/vnd.android.package-archive
       
+    - name: Upload app-armeabi-v7a-release.apk
+    uses: actions/upload-release-asset@v1
+    env:
+        GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+    with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: android-apk/app-armeabi-v7a-release.apk
+        asset_name: app-armeabi-v7a-release.apk
+        asset_content_type: application/vnd.android.package-archive
+      
+    - name: Upload app-arm64-v8a-release.apk
+    uses: actions/upload-release-asset@v1
+    env:
+        GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+    with:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      asset_path: android-apk/app-arm64-v8a-release.apk
+      asset_name: app-arm64-v8a-release.apk
+      asset_content_type: application/vnd.android.package-archive
+      
+    - name: Upload app-x86_64-release.apk
+    uses: actions/upload-release-asset@v1
+    env:
+      GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
+    with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: android-apk/app-x86_64-release.apk
+        asset_name: app-x86_64-release.apk
+        asset_content_type: application/vnd.android.package-archive
+      
+
     - name: Upload Linux App
       uses: actions/upload-release-asset@v1
       env:
