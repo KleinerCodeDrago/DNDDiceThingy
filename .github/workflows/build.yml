@@ -53,10 +53,12 @@ jobs:
       uses: actions/download-artifact@v2
       with:
         name: android-apk
+        path: android-apk
     - name: Download Linux App
       uses: actions/download-artifact@v2
       with:
-        name: linux-app
+          name: linux-app
+          path: linux-app      
     - name: Create Release
       id: create_release
       uses: actions/create-release@v1
@@ -73,15 +75,17 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./*.apk
+        asset_path: android-apk/*.apk
         asset_name: android-apks.zip
         asset_content_type: application/zip
+      
     - name: Upload Linux App
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: ./bundle/*
+        asset_path: linux-app/*
         asset_name: linux-app.zip
         asset_content_type: application/zip
+      
