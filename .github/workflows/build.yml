@@ -39,10 +39,13 @@ jobs:
     - run: flutter config --enable-linux-desktop
     - run: flutter pub get
     - run: flutter build linux --release
+    - run: |
+        cd build/linux/x64/release/
+        tar -czf dnd_dice_thingy_linux.tar.gz bundle
     - uses: actions/upload-artifact@v2
       with:
         name: linux-app
-        path: build/linux/x64/release/
+        path: build/linux/x64/release/dnd_dice_thingy_linux.tar.gz
         
   create_release:
     name: Create Release
@@ -96,32 +99,12 @@ jobs:
         asset_path: android-apk/app-x86_64-release.apk
         asset_name: app-x86_64-release.apk
         asset_content_type: application/vnd.android.package-archive
-    - name: List Linux App Files
-      run: ls -R linux-app
     - name: Upload Linux App Bundle
       uses: actions/upload-release-asset@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
       with:
         upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: linux-app/bundle/dnd_dice_thingy
-        asset_name: dnd_dice_thingy
-        asset_content_type: application/octet-stream
-    - name: Upload Linux App Data
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: linux-app/bundle/data/
-        asset_name: data.zip
-        asset_content_type: application/zip
-    - name: Upload Linux App Lib
-      uses: actions/upload-release-asset@v1
-      env:
-        GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: linux-app/bundle/lib/
-        asset_name: lib.zip
-        asset_content_type: application/zip
+        asset_path: linux-app/dnd_dice_thingy_linux.tar.gz
+        asset_name: dnd_dice_thingy_linux.tar.gz
+        asset_content_type: application/gzip
