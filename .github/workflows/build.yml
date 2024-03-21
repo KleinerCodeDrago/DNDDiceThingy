@@ -46,7 +46,7 @@ jobs:
         with:
           name: linux-app
           path: build/linux/x64/release/dnd_dice_thingy_linux.tar.gz
-    
+
   build_windows:
     name: Build Windows
     runs-on: windows-latest
@@ -61,10 +61,7 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: windows-release
-          path: build\windows\runner\Release
-          
-    
-        
+          path: build\windows\x64\runner\Release       
   create_release:
     name: Create Release
     needs: [build_android, build_linux, build_windows]
