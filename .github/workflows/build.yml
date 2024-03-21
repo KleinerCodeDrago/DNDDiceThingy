@@ -82,22 +82,14 @@ jobs:
         uses: actions/download-artifact@v2
         with:
           name: linux-app
-          path: linux-app      
+          path: linux-app
       - name: Download Windows Release
         uses: actions/download-artifact@v2
         with:
           name: windows-release
           path: windows-release
-      
       - name: Extract Windows Release
-        run: |
-          cd windows-release
-          7z x windows-release.zip
-        
-    
-      - name: Extract Windows Release
-        run: Expand-Archive -Path windows-release/windows-release.zip -DestinationPath windows-release
-    
+        run: unzip windows-release/windows-release.zip -d windows-release
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -153,5 +145,4 @@ jobs:
           asset_path: windows-release/windows-release.zip
           asset_name: dnd_dice_thingy_windows.zip
           asset_content_type: application/zip
-        
-        
+  
