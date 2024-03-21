@@ -61,7 +61,8 @@ jobs:
       - uses: actions/upload-artifact@v2
         with:
           name: windows-release
-          path: build/windows/runner/Release
+          path: build\windows\runner\Release
+    
         
   create_release:
     name: Create Release
@@ -93,6 +94,8 @@ jobs:
           release_name: Release ${{ github.ref }}
           draft: false
           prerelease: false
+      - name: List Windows Release Files
+        run: ls -R windows-release
       - name: Upload Android APKs
         uses: actions/upload-release-asset@v1
         env:
