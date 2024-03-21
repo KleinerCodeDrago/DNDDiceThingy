@@ -30,6 +30,8 @@ class _DiceCalculatorState extends State<DiceCalculator> {
   bool _isAdvantage = false;
   bool _isDisadvantage = false;
   double _probability = 0.0;
+  int _modifier = 0; // Default modifier of 0
+  bool _showNonStandardDice = false;
 
   void _calculateProbability() {
     int maxRoll = _diceType;
@@ -47,7 +49,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
       int result = _isAdvantage
           ? rolls.reduce(max)
           : (_isDisadvantage ? rolls.reduce(min) : rolls[0]);
-      if (result >= _dc) {
+      if (result + _modifier >= _dc) {
         successCount++;
       }
     }
@@ -73,9 +75,10 @@ class _DiceCalculatorState extends State<DiceCalculator> {
               onChanged: (int? newValue) {
                 setState(() {
                   _diceType = newValue!;
+                  _calculateProbability();
                 });
               },
-              items: List.generate(99, (index) => index + 2)
+              items: [4, 6, 8, 10, 12, 20, 100]
                   .map<DropdownMenuItem<int>>((int value) {
                 return DropdownMenuItem<int>(
                   value: value,
@@ -83,15 +86,49 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                 );
               }).toList(),
             ),
+            ElevatedButton(
+              onPressed: () {
+                setState(() {
+                  _showNonStandardDice = !_showNonStandardDice;
+                });
+              },
+              child: const Text('Non-standard Dice'),
+            ),
+            if (_showNonStandardDice)
+              TextField(
+                keyboardType: TextInputType.number,
+                onChanged: (value) {
+                  setState(() {
+                    _diceType = int.parse(value);
+                    _calculateProbability();
+                  });
+                },
+                decoration: const InputDecoration(
+                  labelText: 'Custom Dice Type',
+                ),
+              ),
             TextField(
               keyboardType: TextInputType.number,
               onChanged: (value) {
                 setState(() {
                   _dc = int.parse(value);
+                  _calculateProbability();
                 });
               },
               decoration: const InputDecoration(
                 labelText: 'Difficulty Class (DC)',
+              ),
+            ),
+            TextField(
+              keyboardType: TextInputType.number,
+              onChanged: (value) {
+                setState(() {
+                  _modifier = int.parse(value);
+                  _calculateProbability();
+                });
+              },
+              decoration: const InputDecoration(
+                labelText: 'Modifier',
               ),
             ),
             SwitchListTile(
@@ -101,6 +138,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                 setState(() {
                   _isAdvantage = value;
                   _isDisadvantage = false;
+                  _calculateProbability();
                 });
               },
             ),
@@ -111,17 +149,19 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                 setState(() {
                   _isDisadvantage = value;
                   _isAdvantage = false;
+                  _calculateProbability();
                 });
               },
             ),
-            ElevatedButton(
-              onPressed: _calculateProbability,
-              child: const Text('Calculate Probability'),
-            ),
             const SizedBox(height: 16.0),
             Text(
-              'Probability of rolling $_dc or higher: ${(_probability * 100).toStringAsFixed(2)}%',
+              'Probability of rolling $_dc or higher with a modifier of $_modifier:',
               style: const TextStyle(fontSize: 18.0),
+            ),
+            Text(
+              '${(_probability * 100).toStringAsFixed(2)}%',
+              style:
+                  const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
             ),
           ],
         ),
