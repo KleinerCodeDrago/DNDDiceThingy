@@ -37,6 +37,12 @@ class _DiceCalculatorState extends State<DiceCalculator> {
   bool _showDCError = false;
   bool _showModifierError = false;
 
+  @override
+  void initState() {
+    super.initState();
+    _calculateProbability();
+  }
+
   void _calculateProbability() {
     int maxRoll = _showNonStandardDice && _customDiceType > 0
         ? _customDiceType
