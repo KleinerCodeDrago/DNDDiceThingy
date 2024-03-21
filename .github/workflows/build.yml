@@ -59,11 +59,14 @@ jobs:
       - run: flutter pub get
       - run: flutter build windows --release
       - name: Compress Windows release
-        run: Compress-Archive -Path build\windows\runner\Release\* -DestinationPath windows-release.zip
+        run: |
+          cd build\windows\x64\runner\Release
+          7z a -tzip windows-release.zip *
       - uses: actions/upload-artifact@v2
         with:
           name: windows-release
-          path: windows-release.zip
+          path: build\windows\x64\runner\Release\windows-release.zip
+          
             
   create_release:
     name: Create Release
@@ -85,6 +88,12 @@ jobs:
         with:
           name: windows-release
           path: windows-release
+      
+      - name: Extract Windows Release
+        run: |
+          cd windows-release
+          7z x windows-release.zip
+        
     
       - name: Extract Windows Release
         run: Expand-Archive -Path windows-release/windows-release.zip -DestinationPath windows-release
@@ -141,7 +150,8 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: windows-release
+          asset_path: windows-release/windows-release.zip
           asset_name: dnd_dice_thingy_windows.zip
           asset_content_type: application/zip
+        
         
