@@ -20,7 +20,7 @@ DNDDiceThingy is a Flutter application designed to help Dungeons & Dragons playe
 
 ## Releases
 
-You can download the latest release of DNDDiceThingy for your platform from the [Releases](https://github.com/your-username/your-repo/releases) page on GitHub.
+You can download the latest release of DNDDiceThingy for your platform from the [Releases](https://github.com/KleinerCodeDrago/DNDDiceThingy/releases) page on GitHub.
 
 Available platforms:
 
