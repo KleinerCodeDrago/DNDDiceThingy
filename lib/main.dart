@@ -37,10 +37,23 @@ class _DiceCalculatorState extends State<DiceCalculator> {
   bool _showDCError = false;
   bool _showModifierError = false;
 
+  final TextEditingController _customDiceTypeController =
+      TextEditingController();
+  final TextEditingController _dcController = TextEditingController();
+  final TextEditingController _modifierController = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     _calculateProbability();
+  }
+
+  @override
+  void dispose() {
+    _customDiceTypeController.dispose();
+    _dcController.dispose();
+    _modifierController.dispose();
+    super.dispose();
   }
 
   void _calculateProbability() {
@@ -119,12 +132,17 @@ class _DiceCalculatorState extends State<DiceCalculator> {
               onPressed: () {
                 setState(() {
                   _showNonStandardDice = !_showNonStandardDice;
+                  if (!_showNonStandardDice) {
+                    _customDiceTypeController.clear();
+                    _customDiceType = 0;
+                  }
                 });
               },
               child: const Text('Non-standard Dice'),
             ),
             if (_showNonStandardDice)
               TextField(
+                controller: _customDiceTypeController,
                 keyboardType: TextInputType.number,
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
@@ -150,6 +168,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                 ),
               ),
             TextField(
+              controller: _dcController,
               keyboardType: TextInputType.number,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
@@ -178,6 +197,7 @@ class _DiceCalculatorState extends State<DiceCalculator> {
               ),
             ),
             TextField(
+              controller: _modifierController,
               keyboardType: TextInputType.number,
               inputFormatters: [
                 FilteringTextInputFormatter.allow(RegExp(r'^-?\d*')),
