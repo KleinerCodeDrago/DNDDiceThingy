@@ -1,10 +1,8 @@
 name: Build Flutter Project for Test
-
 on:
     pull_request:
-        branches:
-        - main
-
+      branches:
+        - master  
 jobs:
 
   build_android:
