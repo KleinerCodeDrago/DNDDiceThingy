@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'dart:math';
 
 void main() {
@@ -26,15 +27,20 @@ class DiceCalculator extends StatefulWidget {
 
 class _DiceCalculatorState extends State<DiceCalculator> {
   int _diceType = 20; // Default to d20
+  int _customDiceType = 0; // Custom dice type, initially set to 0
   int _dc = 10; // Default DC of 10
   bool _isAdvantage = false;
   bool _isDisadvantage = false;
   double _probability = 0.0;
   int _modifier = 0; // Default modifier of 0
   bool _showNonStandardDice = false;
+  bool _showDCError = false;
+  bool _showModifierError = false;
 
   void _calculateProbability() {
-    int maxRoll = _diceType;
+    int maxRoll = _showNonStandardDice && _customDiceType > 0
+        ? _customDiceType
+        : _diceType;
     int numRolls = _isAdvantage ? 2 : (_isDisadvantage ? 2 : 1);
     int successCount = 0;
     int totalCombinations = pow(maxRoll, numRolls).toInt();
@@ -71,15 +77,32 @@ class _DiceCalculatorState extends State<DiceCalculator> {
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
             DropdownButton<int>(
-              value: _diceType,
+              value: _showNonStandardDice && _customDiceType > 0
+                  ? _customDiceType
+                  : _diceType,
               onChanged: (int? newValue) {
                 setState(() {
-                  _diceType = newValue!;
+                  if (_showNonStandardDice && _customDiceType > 0) {
+                    _customDiceType = newValue!;
+                  } else {
+                    _diceType = newValue!;
+                  }
                   _calculateProbability();
                 });
               },
-              items: [4, 6, 8, 10, 12, 20, 100]
-                  .map<DropdownMenuItem<int>>((int value) {
+              items: [
+                if (!_showNonStandardDice || _customDiceType == 0) ...[
+                  4,
+                  6,
+                  8,
+                  10,
+                  12,
+                  20,
+                  100
+                ],
+                if (_showNonStandardDice && _customDiceType > 0)
+                  _customDiceType,
+              ].map<DropdownMenuItem<int>>((int value) {
                 return DropdownMenuItem<int>(
                   value: value,
                   child: Text('d$value'),
@@ -97,10 +120,23 @@ class _DiceCalculatorState extends State<DiceCalculator> {
             if (_showNonStandardDice)
               TextField(
                 keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                ],
                 onChanged: (value) {
                   setState(() {
-                    _diceType = int.parse(value);
-                    _calculateProbability();
+                    try {
+                      _customDiceType = int.parse(value);
+                      if (_customDiceType <= 0) {
+                        _customDiceType = 0;
+                        _probability = 0.0;
+                      } else {
+                        _calculateProbability();
+                      }
+                    } catch (e) {
+                      _customDiceType = 0;
+                      _probability = 0.0;
+                    }
                   });
                 },
                 decoration: const InputDecoration(
@@ -109,26 +145,58 @@ class _DiceCalculatorState extends State<DiceCalculator> {
               ),
             TextField(
               keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+              ],
               onChanged: (value) {
                 setState(() {
-                  _dc = int.parse(value);
-                  _calculateProbability();
+                  try {
+                    _dc = int.parse(value);
+                    if (_dc == 0) {
+                      _probability = 0.0;
+                      _showDCError = true;
+                    } else {
+                      _calculateProbability();
+                      _showDCError = false;
+                    }
+                  } catch (e) {
+                    _dc = 0;
+                    _probability = 0.0;
+                    _showDCError = true;
+                  }
                 });
               },
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Difficulty Class (DC)',
+                errorText: _showDCError ? 'Invalid DC value' : null,
               ),
             ),
             TextField(
               keyboardType: TextInputType.number,
+              inputFormatters: [
+                FilteringTextInputFormatter.allow(RegExp(r'^-?\d*')),
+              ],
               onChanged: (value) {
                 setState(() {
-                  _modifier = int.parse(value);
-                  _calculateProbability();
+                  if (value.isEmpty) {
+                    _modifier = 0;
+                    _calculateProbability();
+                    _showModifierError = false;
+                  } else {
+                    try {
+                      _modifier = int.parse(value);
+                      _calculateProbability();
+                      _showModifierError = false;
+                    } catch (e) {
+                      _modifier = 0;
+                      _showModifierError = true;
+                    }
+                  }
                 });
               },
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                 labelText: 'Modifier',
+                errorText: _showModifierError ? 'Invalid modifier value' : null,
               ),
             ),
             SwitchListTile(
