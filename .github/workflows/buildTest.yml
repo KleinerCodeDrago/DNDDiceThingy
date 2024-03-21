@@ -1,12 +1,9 @@
 name: Build Flutter Project for Test
 
 on:
-  push:
-    tags:
-      - 'v*'
-  pull_request:
-    branches:
-      - main
+    pull_request:
+        branches:
+        - main
 
 jobs:
 
