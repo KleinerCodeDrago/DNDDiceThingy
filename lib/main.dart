@@ -222,14 +222,26 @@ class _DiceCalculatorState extends State<DiceCalculator> {
               },
             ),
             const SizedBox(height: 16.0),
-            Text(
-              'Probability of rolling $_dc or higher with a modifier of $_modifier:',
-              style: const TextStyle(fontSize: 18.0),
-            ),
-            Text(
-              '${(_probability * 100).toStringAsFixed(2)}%',
-              style:
-                  const TextStyle(fontSize: 24.0, fontWeight: FontWeight.bold),
+            Expanded(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Text(
+                    'Probability of rolling $_dc or higher with a modifier of $_modifier:',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(fontSize: 24.0),
+                  ),
+                  const SizedBox(height: 16.0),
+                  Text(
+                    '${(_probability * 100).toStringAsFixed(2)}%',
+                    textAlign: TextAlign.center,
+                    style: const TextStyle(
+                      fontSize: 48.0,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ],
         ),
