@@ -36,7 +36,7 @@ To install and run the application:
 
 - **Android**: Enable installation from unknown sources in your device settings, then download and install the APK file.
 - **Linux**: Extract the tar.gz file and run the executable inside the extracted directory.
-- **Windows**: Download the exe file and run it as an administrator.
+- **Windows**: Download the zip file and run the exe it as an administrator.
 
 Note: The releases are automatically generated using GitHub Actions whenever a new tag is pushed to the repository. This ensures that you always have access to the latest version of the application.
 
