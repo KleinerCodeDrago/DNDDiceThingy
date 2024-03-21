@@ -1,15 +1,44 @@
 DNDDiceThingy
 -------------
 
-DNDDiceThingy is a Flutter application that helps Dungeons & Dragons players calculate the probability of rolling a specific target number or higher on various dice types, taking into account advantage, disadvantage, and single rolls.
+DNDDiceThingy is a Flutter application designed to help Dungeons & Dragons players calculate the probability of rolling a specific target number or higher on various dice types, taking into account advantage, disadvantage, and single rolls.
+
+Table of Contents
+-----------------
+
+- [Features](/search/I-created-a-T_qMCBjTSOaxIoZjd4Q.nw#features)
+- [Releases](/search/I-created-a-T_qMCBjTSOaxIoZjd4Q.nw#releases)
+- [Getting Started](/search/I-created-a-T_qMCBjTSOaxIoZjd4Q.nw#getting-started)
+- [Usage](/search/I-created-a-T_qMCBjTSOaxIoZjd4Q.nw#usage)
+- [Contributing](/search/I-created-a-T_qMCBjTSOaxIoZjd4Q.nw#contributing)
+- [License](/search/I-created-a-T_qMCBjTSOaxIoZjd4Q.nw#license)
 
 Features
 --------
 
-* Select dice type from d2 to d100
-* Enter the target Difficulty Class (DC)
-* Choose between advantage (rolling two dice and taking the higher roll), disadvantage (rolling two dice and taking the lower roll), or a single roll
-* Calculate and display the probability of rolling the DC or higher
+- Select dice type from d2 to d100
+- Enter the target Difficulty Class (DC)
+- Choose between advantage (rolling two dice and taking the higher roll), disadvantage (rolling two dice and taking the lower roll), or a single roll
+- Calculate and display the probability of rolling the DC or higher
+
+Releases
+--------
+
+You can download the latest release of DNDDiceThingy for your platform from the [Releases](https://github.com/KleinerCodeDrago/DNDDiceThingy/releases) page on GitHub.
+
+Available platforms:
+
+- Android (APK)
+- Linux (tar.gz)
+- Windows (zip)
+
+To install and run the application:
+
+- **Android**: Enable installation from unknown sources in your device settings, then download and install the APK file.
+- **Linux**: Extract the tar.gz file and run the executable inside the extracted directory.
+- **Windows**: Download the zip file and run the executable in it as an administrator. Note that you need to have the Visual C++ Redistributable installed on your system to run the Windows release. If you encounter an error about missing DLL files, please download and install the Visual C++ Redistributable from the [Microsoft website](https://support.microsoft.com/en-us/help/2977003/the-latest-supported-visual-c-downloads).
+
+Note: The releases are automatically generated using GitHub Actions whenever a new tag is pushed to the repository. This ensures that you always have access to the latest version of the application.
 
 Getting Started
 ---------------
@@ -42,7 +71,16 @@ Contributing
 
 Contributions to DNDDiceThingy are welcome! If you find any issues or have suggestions for improvements, please open an issue or submit a pull request on the project's GitHub repository.
 
+To contribute to the project:
+
+1. Fork the repository and clone it to your local machine.
+2. Create a new branch for your feature or bug fix.
+3. Make your changes and ensure that the code passes all tests.
+4. Submit a pull request describing your changes and referencing any relevant issues.
+
+Please follow the existing code style and conventions used in the project. If you have any questions or need assistance, feel free to reach out to the maintainers.
+
 License
 -------
 
-DNDDiceThingy is released under the [MIT License](https://opensource.org/licenses/MIT).
+DNDDiceThingy is released under the [MIT License](https://opensource.org/licenses/MIT). And here's the issue you can create on GitHub:
