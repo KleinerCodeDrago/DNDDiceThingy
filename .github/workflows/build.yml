@@ -66,8 +66,7 @@ jobs:
         with:
           name: windows-release
           path: build\windows\x64\runner\Release\windows-release.zip
-          
-            
+              
   create_release:
     name: Create Release
     needs: [build_android, build_linux, build_windows]
