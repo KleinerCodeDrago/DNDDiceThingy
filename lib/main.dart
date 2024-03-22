@@ -97,36 +97,31 @@ class _DiceCalculatorState extends State<DiceCalculator> {
           children: [
             DropdownButton<int>(
               value: _showNonStandardDice && _customDiceType > 0
-                  ? _customDiceType
+                  ? null
                   : _diceType,
-              onChanged: (int? newValue) {
-                setState(() {
-                  if (_showNonStandardDice && _customDiceType > 0) {
-                    _customDiceType = newValue!;
-                  } else {
-                    _diceType = newValue!;
-                  }
-                  _calculateProbability();
-                });
-              },
+              onChanged: _showNonStandardDice && _customDiceType > 0
+                  ? null
+                  : (int? newValue) {
+                      setState(() {
+                        _diceType = newValue!;
+                        _calculateProbability();
+                      });
+                    },
               items: [
-                if (!_showNonStandardDice || _customDiceType == 0) ...[
-                  4,
-                  6,
-                  8,
-                  10,
-                  12,
-                  20,
-                  100
-                ],
-                if (_showNonStandardDice && _customDiceType > 0)
-                  _customDiceType,
+                4,
+                6,
+                8,
+                10,
+                12,
+                20,
+                100,
               ].map<DropdownMenuItem<int>>((int value) {
                 return DropdownMenuItem<int>(
                   value: value,
                   child: Text('d$value'),
                 );
               }).toList(),
+              disabledHint: Text('Custom dice'),
             ),
             ElevatedButton(
               onPressed: () {
