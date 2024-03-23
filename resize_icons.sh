@@ -37,10 +37,5 @@ convert "$input_file" -resize 76x76 "$ios_dir/Icon-App-76x76@2x.png"
 convert "$input_file" -resize 83.5x83.5 "$ios_dir/Icon-App-83.5x83.5@2x.png"
 convert "$input_file" -resize 1024x1024 "$ios_dir/Icon-App-1024x1024@1x.png"
 
-# Resize and rename the icon for Windows
-# convert "$input_file" -resize 16x16 "$windows_dir/app_icon_16.png"
-# convert "$input_file" -resize 32x32 "$windows_dir/app_icon_32.png"
-# convert "$input_file" -resize 48x48 "$windows_dir/app_icon_48.png"
-# convert "$input_file" -resize 64x64 "$windows_dir/app_icon_64.png"
-# convert "$input_file" -resize 128x128 "$windows_dir/app_icon_128.png"
-# convert "$input_file" -resize 256x256 "$windows_dir/app_icon_256.png"
+# Convert the input file to ICO and replace the existing Windows app icon
+convert "$input_file" -define icon:auto-resize=256,128,64,48,32,16 "$windows_dir/app_icon.ico"
