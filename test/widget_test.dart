@@ -1,30 +1,73 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:integration_test/integration_test.dart';
 
 import 'package:dnd_dice_thingy/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  IntegrationTestWidgetsFlutterBinding.ensureInitialized();
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  group('Dice Probability Calculator App', () {
+    testWidgets('Default dice type is d20', (WidgetTester tester) async {
+      await tester.pumpWidget(const MyApp());
+      expect(find.text('d20'), findsOneWidget);
+    });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    testWidgets('Can select different dice types', (WidgetTester tester) async {
+      await tester.pumpWidget(const MyApp());
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+      await tester.tap(find.text('d20'));
+      await tester.pumpAndSettle();
+      await tester.tap(find.text('d6').last);
+      await tester.pumpAndSettle();
+
+      expect(find.text('d6'), findsOneWidget);
+    });
+
+    testWidgets('Can enter custom dice type', (WidgetTester tester) async {
+      await tester.pumpWidget(const MyApp());
+
+      await tester.tap(find.text('Non-standard Dice'));
+      await tester.pumpAndSettle();
+
+      await tester.enterText(find.byType(TextField).first, '30');
+      await tester.pumpAndSettle();
+
+      expect(find.text('30'), findsOneWidget);
+    });
+
+    testWidgets('Can enter DC and modifier', (WidgetTester tester) async {
+      await tester.pumpWidget(const MyApp());
+
+      await tester.enterText(find.byType(TextField).at(0), '15');
+      await tester.enterText(find.byType(TextField).at(1), '2');
+      await tester.pumpAndSettle();
+
+      expect(find.text('15'), findsOneWidget);
+      expect(find.text('2'), findsOneWidget);
+    });
+
+    testWidgets('Can toggle advantage and disadvantage',
+        (WidgetTester tester) async {
+      await tester.pumpWidget(const MyApp());
+
+      await tester.tap(find.byType(SwitchListTile).at(0));
+      await tester.pumpAndSettle();
+      expect(find.text('Advantage'), findsOneWidget);
+
+      await tester.tap(find.byType(SwitchListTile).at(1));
+      await tester.pumpAndSettle();
+      expect(find.text('Disadvantage'), findsOneWidget);
+    });
+
+    testWidgets('Calculates correct probability', (WidgetTester tester) async {
+      await tester.pumpWidget(const MyApp());
+
+      await tester.enterText(find.byType(TextField).at(0), '15');
+      await tester.enterText(find.byType(TextField).at(1), '2');
+      await tester.pumpAndSettle();
+
+      expect(find.text('80.00%'), findsOneWidget);
+    });
   });
 }
