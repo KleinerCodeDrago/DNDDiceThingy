@@ -16,8 +16,10 @@ Table of Contents
 Features
 --------
 
-- Select dice type from d2 to d100
+- Select dice type from d4 to d100
+- Enter custom non-standard dice types
 - Enter the target Difficulty Class (DC)
+- Add modifiers to the roll
 - Choose between advantage (rolling two dice and taking the higher roll), disadvantage (rolling two dice and taking the lower roll), or a single roll
 - Calculate and display the probability of rolling the DC or higher
 
@@ -61,10 +63,11 @@ Usage
 
 1. Upon launching the application, you will see the main screen with various input fields and controls.
 2. Select the dice type you want to use from the dropdown menu (e.g., d20, d6, d100).
-3. Enter the target Difficulty Class (DC) in the provided text field.
-4. Choose whether you want to roll with advantage, disadvantage, or a single roll by toggling the respective switch.
-5. Click the "Calculate Probability" button to calculate the probability of rolling the DC or higher based on your input.
-6. The calculated probability will be displayed below the button.
+3. To use a non-standard dice type, click the "Non-standard Dice" button and enter the number of sides in the text field.
+4. Enter the target Difficulty Class (DC) in the provided text field. If you enter an invalid DC value, an error message will be displayed.
+5. Enter any modifiers to the roll in the "Modifier" text field. If you enter an invalid modifier value, an error message will be displayed.
+6. Choose whether you want to roll with advantage, disadvantage, or a single roll by toggling the respective switch.
+7. The calculated probability of rolling the DC or higher based on your input will be displayed at the bottom of the screen.
 
 Contributing
 ------------
