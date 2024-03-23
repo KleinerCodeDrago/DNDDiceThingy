@@ -87,7 +87,7 @@ jobs:
         with:
           name: windows-release
       - name: Extract Windows Release
-        run: unzip windows-release/windows-release.zip -d windows-release
+        run: unzip windows-release.zip -d windows-release
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
