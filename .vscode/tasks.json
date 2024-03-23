@@ -1,0 +1,14 @@
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "type": "shell",
+            "label": "Resize Icons",
+            "command": "${workspaceFolder}/resize_icons.sh",
+            "args": [
+                "${workspaceFolder}/icon.png"
+            ],
+            "problemMatcher": []
+        }
+    ]
+}
