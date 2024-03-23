@@ -6,6 +6,7 @@ on:
   push:
     tags:
       - 'v*'
+      - 'alpha*'
 
 jobs:
   build_android:
@@ -87,7 +88,7 @@ jobs:
         with:
           name: windows-release
       - name: Extract Windows Release
-        run: unzip windows-release.zip -d windows-release
+        run: unzip windows-release.zip
       - name: Create Release
         id: create_release
         uses: actions/create-release@v1
@@ -140,7 +141,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GIT_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: windows-release/windows-release.zip
+          asset_path: windows-release.zip
           asset_name: dnd_dice_thingy_windows.zip
           asset_content_type: application/zip
   
