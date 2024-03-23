@@ -87,57 +87,85 @@ class _DiceCalculatorState extends State<DiceCalculator> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
       appBar: AppBar(
         title: const Text('Dice Probability Calculator'),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: [
-            DropdownButton<int>(
-              value: _showNonStandardDice && _customDiceType > 0
-                  ? null
-                  : _diceType,
-              onChanged: _showNonStandardDice && _customDiceType > 0
-                  ? null
-                  : (int? newValue) {
-                      setState(() {
-                        _diceType = newValue!;
-                        _calculateProbability();
-                      });
-                    },
-              items: [
-                4,
-                6,
-                8,
-                10,
-                12,
-                20,
-                100,
-              ].map<DropdownMenuItem<int>>((int value) {
-                return DropdownMenuItem<int>(
-                  value: value,
-                  child: Text('d$value'),
-                );
-              }).toList(),
-              disabledHint: Text('Custom dice'),
-            ),
-            ElevatedButton(
-              onPressed: () {
-                setState(() {
-                  _showNonStandardDice = !_showNonStandardDice;
-                  if (!_showNonStandardDice) {
-                    _customDiceTypeController.clear();
-                    _customDiceType = 0;
-                  }
-                });
-              },
-              child: const Text('Non-standard Dice'),
-            ),
-            if (_showNonStandardDice)
+      body: SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: [
+              DropdownButton<int>(
+                value: _showNonStandardDice && _customDiceType > 0
+                    ? null
+                    : _diceType,
+                onChanged: _showNonStandardDice && _customDiceType > 0
+                    ? null
+                    : (int? newValue) {
+                        setState(() {
+                          _diceType = newValue!;
+                          _calculateProbability();
+                        });
+                      },
+                items: [
+                  4,
+                  6,
+                  8,
+                  10,
+                  12,
+                  20,
+                  100,
+                ].map<DropdownMenuItem<int>>((int value) {
+                  return DropdownMenuItem<int>(
+                    value: value,
+                    child: Text('d$value'),
+                  );
+                }).toList(),
+                disabledHint: Text('Custom dice'),
+              ),
+              ElevatedButton(
+                onPressed: () {
+                  setState(() {
+                    _showNonStandardDice = !_showNonStandardDice;
+                    if (!_showNonStandardDice) {
+                      _customDiceTypeController.clear();
+                      _customDiceType = 0;
+                    }
+                  });
+                },
+                child: const Text('Non-standard Dice'),
+              ),
+              if (_showNonStandardDice)
+                TextField(
+                  controller: _customDiceTypeController,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: [
+                    FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
+                  ],
+                  onChanged: (value) {
+                    setState(() {
+                      try {
+                        _customDiceType = int.parse(value);
+                        if (_customDiceType <= 0) {
+                          _customDiceType = 0;
+                          _probability = 0.0;
+                        } else {
+                          _calculateProbability();
+                        }
+                      } catch (e) {
+                        _customDiceType = 0;
+                        _probability = 0.0;
+                      }
+                    });
+                  },
+                  decoration: const InputDecoration(
+                    labelText: 'Custom Dice Type',
+                  ),
+                ),
               TextField(
-                controller: _customDiceTypeController,
+                controller: _dcController,
                 keyboardType: TextInputType.number,
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
@@ -145,126 +173,95 @@ class _DiceCalculatorState extends State<DiceCalculator> {
                 onChanged: (value) {
                   setState(() {
                     try {
-                      _customDiceType = int.parse(value);
-                      if (_customDiceType <= 0) {
-                        _customDiceType = 0;
+                      _dc = int.parse(value);
+                      if (_dc == 0) {
                         _probability = 0.0;
+                        _showDCError = true;
                       } else {
                         _calculateProbability();
+                        _showDCError = false;
                       }
                     } catch (e) {
-                      _customDiceType = 0;
+                      _dc = 0;
                       _probability = 0.0;
+                      _showDCError = true;
                     }
                   });
                 },
-                decoration: const InputDecoration(
-                  labelText: 'Custom Dice Type',
+                decoration: InputDecoration(
+                  labelText: 'Difficulty Class (DC)',
+                  errorText: _showDCError ? 'Invalid DC value' : null,
                 ),
               ),
-            TextField(
-              controller: _dcController,
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'[0-9]')),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  try {
-                    _dc = int.parse(value);
-                    if (_dc == 0) {
-                      _probability = 0.0;
-                      _showDCError = true;
-                    } else {
-                      _calculateProbability();
-                      _showDCError = false;
-                    }
-                  } catch (e) {
-                    _dc = 0;
-                    _probability = 0.0;
-                    _showDCError = true;
-                  }
-                });
-              },
-              decoration: InputDecoration(
-                labelText: 'Difficulty Class (DC)',
-                errorText: _showDCError ? 'Invalid DC value' : null,
-              ),
-            ),
-            TextField(
-              controller: _modifierController,
-              keyboardType: TextInputType.number,
-              inputFormatters: [
-                FilteringTextInputFormatter.allow(RegExp(r'^-?\d*')),
-              ],
-              onChanged: (value) {
-                setState(() {
-                  if (value.isEmpty) {
-                    _modifier = 0;
-                    _calculateProbability();
-                    _showModifierError = false;
-                  } else {
-                    try {
-                      _modifier = int.parse(value);
+              TextField(
+                controller: _modifierController,
+                keyboardType: TextInputType.number,
+                inputFormatters: [
+                  FilteringTextInputFormatter.allow(RegExp(r'^-?\d*')),
+                ],
+                onChanged: (value) {
+                  setState(() {
+                    if (value.isEmpty) {
+                      _modifier = 0;
                       _calculateProbability();
                       _showModifierError = false;
-                    } catch (e) {
-                      _modifier = 0;
-                      _showModifierError = true;
+                    } else {
+                      try {
+                        _modifier = int.parse(value);
+                        _calculateProbability();
+                        _showModifierError = false;
+                      } catch (e) {
+                        _modifier = 0;
+                        _showModifierError = true;
+                      }
                     }
-                  }
-                });
-              },
-              decoration: InputDecoration(
-                labelText: 'Modifier',
-                errorText: _showModifierError ? 'Invalid modifier value' : null,
+                  });
+                },
+                decoration: InputDecoration(
+                  labelText: 'Modifier',
+                  errorText:
+                      _showModifierError ? 'Invalid modifier value' : null,
+                ),
               ),
-            ),
-            SwitchListTile(
-              title: const Text('Advantage'),
-              value: _isAdvantage,
-              onChanged: (bool value) {
-                setState(() {
-                  _isAdvantage = value;
-                  _isDisadvantage = false;
-                  _calculateProbability();
-                });
-              },
-            ),
-            SwitchListTile(
-              title: const Text('Disadvantage'),
-              value: _isDisadvantage,
-              onChanged: (bool value) {
-                setState(() {
-                  _isDisadvantage = value;
-                  _isAdvantage = false;
-                  _calculateProbability();
-                });
-              },
-            ),
-            const SizedBox(height: 16.0),
-            Expanded(
-              child: Column(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Text(
-                    'Probability of rolling $_dc or higher with a modifier of $_modifier:',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(fontSize: 24.0),
-                  ),
-                  const SizedBox(height: 16.0),
-                  Text(
-                    '${(_probability * 100).toStringAsFixed(2)}%',
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                      fontSize: 48.0,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ],
+              SwitchListTile(
+                title: const Text('Advantage'),
+                value: _isAdvantage,
+                onChanged: (bool value) {
+                  setState(() {
+                    _isAdvantage = value;
+                    _isDisadvantage = false;
+                    _calculateProbability();
+                  });
+                },
               ),
-            ),
-          ],
+              SwitchListTile(
+                title: const Text('Disadvantage'),
+                value: _isDisadvantage,
+                onChanged: (bool value) {
+                  setState(() {
+                    _isDisadvantage = value;
+                    _isAdvantage = false;
+                    _calculateProbability();
+                  });
+                },
+              ),
+              const SizedBox(height: 16.0),
+              Text(
+                'Probability of rolling $_dc or higher with a modifier of $_modifier:',
+                textAlign: TextAlign.center,
+                style: const TextStyle(fontSize: 24.0),
+              ),
+              const SizedBox(height: 16.0),
+              Text(
+                '${(_probability * 100).toStringAsFixed(2)}%',
+                textAlign: TextAlign.center,
+                style: const TextStyle(
+                  fontSize: 48.0,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ],
+          ),
         ),
       ),
     );
